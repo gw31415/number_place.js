@@ -22,11 +22,20 @@ function refresh(field: import('../static/pkg/number_place_wasm').Field) {
 			'input', () => {
 				if (input.value.match(/^[1-9]$/g)) {
 					const value = parseInt(input.value)
-					try {
-						field.insert(i, value)
-					} catch(e) {
-						alert(e)
-						document.location.reload()
+					if (field.possiblity_at(i).includes(value)) {
+						try {
+							field.insert(i, value)
+						} catch (e) {
+							alert(e)
+							document.location.reload()
+						}
+					} else {
+						const cell = document.getElementById(`c${i}`)
+						cell.style.backgroundColor = '#ff4b00';
+						setTimeout(() => {
+							cell.removeAttribute('style')
+						}, 100);
+						input.value = ""
 					}
 					refresh(field)
 				} else {

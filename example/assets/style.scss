@@ -1,9 +1,9 @@
-/* skeleton.css and normalize.css for reference */
 *,
 *:before,
 *:after {
+	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
-	box-sizing: border-box
+	-ms-box-sizing: border-box;
 }
 
 html {
@@ -16,27 +16,15 @@ html {
 }
 
 body {
-	font-size: 1em;
-	/* currently ems cause chrome bug misinterpreting rems on body element */
-	line-height: 1;
-	color: #222;
-	margin: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	line-height: 1;
+	color: #222;
+	margin: 0;
+	font-size: 1em;
 	height: 100vh;
 	max-width: 100%;
-}
-
-input {
-	border: solid 0;
-	outline: none;
-	color: inherit;
-	font: inherit;
-	font-size: .4rem;
-	margin: 0;
-	width: 1rem;
-	height: 1rem;
 }
 
 body,
@@ -46,12 +34,27 @@ input {
 
 table {
 	border-collapse: collapse;
+	max-width: 512px;
 }
-table th, td {
-	border: solid 1px black;
+
+tr {
+	height: 10%;
 }
+
 td {
-	height: 1rem;
-	width: 1rem;
-	font-size: 0.7rem;
+	border: solid 1px black;
+	font-size: .7rem;
+	width: 10%;
+	aspect-ratio: 1;
+}
+
+input {
+	color: inherit;
+	outline: none;
+	margin: 0;
+	border: solid 0;
+	font: inherit;
+	font-size: .4rem;
+	width: 100%;
+	aspect-ratio: 1;
 }

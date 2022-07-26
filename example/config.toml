@@ -1,0 +1,10 @@
+languageCode = 'en-us'
+title = 'Solve Number-places'
+ignorefiles = 'assets/pkg'
+
+[author]
+name = 'Amadeus_vn'
+
+[params]
+icon = 'favicon.png'
+description = 'A web application solves Number-place puzzles using bound propagation and search methods.'

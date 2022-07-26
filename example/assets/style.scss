@@ -1,0 +1,55 @@
+/* skeleton.css and normalize.css for reference */
+*,
+*:before,
+*:after {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box
+}
+
+html {
+	font-size: 8vmin;
+	font-size: 8dvmin;
+	-ms-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+	font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: 400;
+}
+
+body {
+	font-size: 1em;
+	/* currently ems cause chrome bug misinterpreting rems on body element */
+	line-height: 1;
+	color: #222;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	max-width: 100%;
+}
+
+input {
+	border: solid 0;
+	outline: none;
+	color: inherit;
+	font: inherit;
+	margin: 0;
+	max-width: 1rem;
+}
+
+body,
+input {
+	text-align: center;
+}
+
+table {
+	border-collapse: collapse;
+}
+table th, td {
+	border: solid 1px black;
+}
+td {
+	height: 1rem;
+	width: 1rem;
+	font-size: 0.7rem;
+}

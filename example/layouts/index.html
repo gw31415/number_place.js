@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>{{ .Title }}</title>
+	<meta name="description" content="{{ .Site.Params.description }}">
+	<meta name="author" content="{{ .Site.Author.name }}">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/png" href="{{ .Site.Params.icon }}">
+	<link rel="apple-touch-icon" href="{{ .Site.Params.icon }}">
+</head>
+
+<style>
+{{ with resources.Get "style.scss" | resources.ToCSS }}
+{{ .Content | safeCSS}}
+{{ end }}
+</style>
+
+<body>
+	<table border=1>
+		<tr>
+			<td id="c0"> <input id="i0"/></td>
+			<td id="c1"> <input id="i1"/></td>
+			<td id="c2"> <input id="i2"/></td>
+			<td id="c3"> <input id="i3"/></td>
+			<td id="c4"> <input id="i4"/></td>
+			<td id="c5"> <input id="i5"/></td>
+			<td id="c6"> <input id="i6"/></td>
+			<td id="c7"> <input id="i7"/></td>
+			<td id="c8"> <input id="i8"/></td>
+		</tr>
+		<tr>
+			<td id="c9"> <input id="i9"/></td>
+			<td id="c10"> <input id="i10"/></td>
+			<td id="c11"> <input id="i11"/></td>
+			<td id="c12"> <input id="i12"/></td>
+			<td id="c13"> <input id="i13"/></td>
+			<td id="c14"> <input id="i14"/></td>
+			<td id="c15"> <input id="i15"/></td>
+			<td id="c16"> <input id="i16"/></td>
+			<td id="c17"> <input id="i17"/></td>
+		</tr>
+		<tr>
+			<td id="c18"> <input id="i18"/></td>
+			<td id="c19"> <input id="i19"/></td>
+			<td id="c20"> <input id="i20"/></td>
+			<td id="c21"> <input id="i21"/></td>
+			<td id="c22"> <input id="i22"/></td>
+			<td id="c23"> <input id="i23"/></td>
+			<td id="c24"> <input id="i24"/></td>
+			<td id="c25"> <input id="i25"/></td>
+			<td id="c26"> <input id="i26"/></td>
+		</tr>
+		<tr>
+			<td id="c27"> <input id="i27"/></td>
+			<td id="c28"> <input id="i28"/></td>
+			<td id="c29"> <input id="i29"/></td>
+			<td id="c30"> <input id="i30"/></td>
+			<td id="c31"> <input id="i31"/></td>
+			<td id="c32"> <input id="i32"/></td>
+			<td id="c33"> <input id="i33"/></td>
+			<td id="c34"> <input id="i34"/></td>
+			<td id="c35"> <input id="i35"/></td>
+		</tr>
+		<tr>
+			<td id="c36"> <input id="i36"/></td>
+			<td id="c37"> <input id="i37"/></td>
+			<td id="c38"> <input id="i38"/></td>
+			<td id="c39"> <input id="i39"/></td>
+			<td id="c40"> <input id="i40"/></td>
+			<td id="c41"> <input id="i41"/></td>
+			<td id="c42"> <input id="i42"/></td>
+			<td id="c43"> <input id="i43"/></td>
+			<td id="c44"> <input id="i44"/></td>
+		</tr>
+		<tr>
+			<td id="c45"> <input id="i45"/></td>
+			<td id="c46"> <input id="i46"/></td>
+			<td id="c47"> <input id="i47"/></td>
+			<td id="c48"> <input id="i48"/></td>
+			<td id="c49"> <input id="i49"/></td>
+			<td id="c50"> <input id="i50"/></td>
+			<td id="c51"> <input id="i51"/></td>
+			<td id="c52"> <input id="i52"/></td>
+			<td id="c53"> <input id="i53"/></td>
+		</tr>
+		<tr>
+			<td id="c54"> <input id="i54"/></td>
+			<td id="c55"> <input id="i55"/></td>
+			<td id="c56"> <input id="i56"/></td>
+			<td id="c57"> <input id="i57"/></td>
+			<td id="c58"> <input id="i58"/></td>
+			<td id="c59"> <input id="i59"/></td>
+			<td id="c60"> <input id="i60"/></td>
+			<td id="c61"> <input id="i61"/></td>
+			<td id="c62"> <input id="i62"/></td>
+		</tr>
+		<tr>
+			<td id="c63"> <input id="i63"/></td>
+			<td id="c64"> <input id="i64"/></td>
+			<td id="c65"> <input id="i65"/></td>
+			<td id="c66"> <input id="i66"/></td>
+			<td id="c67"> <input id="i67"/></td>
+			<td id="c68"> <input id="i68"/></td>
+			<td id="c69"> <input id="i69"/></td>
+			<td id="c70"> <input id="i70"/></td>
+			<td id="c71"> <input id="i71"/></td>
+		</tr>
+		<tr>
+			<td id="c72"> <input id="i72"/></td>
+			<td id="c73"> <input id="i73"/></td>
+			<td id="c74"> <input id="i74"/></td>
+			<td id="c75"> <input id="i75"/></td>
+			<td id="c76"> <input id="i76"/></td>
+			<td id="c77"> <input id="i77"/></td>
+			<td id="c78"> <input id="i78"/></td>
+			<td id="c79"> <input id="i79"/></td>
+			<td id="c80"> <input id="i80"/></td>
+		</tr>
+	</table>
+</body>
+
+<script>{{
+		$js := resources.Get "script.ts" | js.Build (
+			dict "externals" (slice "./pkg/number_place_wasm.js")
+		) | minify
+	}}{{ $js.Content | safeJS }}</script>
+
+</html>

@@ -51,7 +51,7 @@ function refresh(field: import('../static/pkg/number_place_wasm').Field) {
 			e.readOnly = true
 		})
 		const seeker = new wasm.Seeker(field);
-		(async () => {
+		setTimeout(() => {
 			let report = seeker.next();
 			console.log(report.msg)
 			while (report.state !== wasm.SeekerState.Found && report.state !== wasm.SeekerState.Finished) {
@@ -65,6 +65,6 @@ function refresh(field: import('../static/pkg/number_place_wasm').Field) {
 			} else {
 				btn.innerText = "No answer Found."
 			}
-		})()
+		}, 0)
 	});
 })()

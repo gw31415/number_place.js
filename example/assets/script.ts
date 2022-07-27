@@ -20,8 +20,10 @@ function refresh(field: import('../static/pkg/number_place_wasm').Field) {
 		const input = document.getElementById(`i${i}`) as HTMLInputElement
 		input.addEventListener(
 			'input', () => {
-				if (input.value.match(/^[1-9]$/g)) {
-					const value = parseInt(input.value)
+				const inputstr = input.value
+				input.value = ""
+				if (inputstr.match(/^[1-9]$/g)) {
+					const value = parseInt(inputstr)
 					if (field.possiblity_at(i).includes(value)) {
 						try {
 							field.insert(i, value)
@@ -35,24 +37,34 @@ function refresh(field: import('../static/pkg/number_place_wasm').Field) {
 						setTimeout(() => {
 							cell.removeAttribute('style')
 						}, 100);
-						input.value = ""
 					}
 					refresh(field)
-				} else {
-					input.value = ""
 				}
 			}
 		)
 	}
-	/*
-	const seeker = new wasm.Seeker(field)
-	let report = seeker.next();
-	console.log(report.msg)
-	while (report.state !== wasm.SeekerState.Found && report.state !== wasm.SeekerState.Finished) {
-		report = seeker.next()
-		console.log(report.msg)
-	}
-	const result = report.result
-	if (result !== null) refresh(result)
-	*/
+	const btn = document.getElementById('btn') as HTMLButtonElement
+	btn.addEventListener('click', () => {
+		btn.disabled = true
+		btn.innerText = "Loading..."
+		Array.from(document.getElementsByTagName('input')).forEach((e) => {
+			e.readOnly = true
+		})
+		const seeker = new wasm.Seeker(field);
+		(async () => {
+			let report = seeker.next();
+			console.log(report.msg)
+			while (report.state !== wasm.SeekerState.Found && report.state !== wasm.SeekerState.Finished) {
+				report = seeker.next()
+				console.log(report.msg)
+			}
+			const result = report.result
+			if (result !== null) {
+				refresh(result)
+				btn.innerText = "An answer Found."
+			} else {
+				btn.innerText = "No answer Found."
+			}
+		})()
+	});
 })()

@@ -5,9 +5,17 @@ type Message = import('../static/round-robin').Message;
 function refresh(field: Field) {
 	for (let i = 0; i < 81; i++) {
 		const possiblity = field.possiblity_at(i)
-		const input = document.getElementById(`i${i}`) as HTMLInputElement
+		const cell = document.getElementById(`c${i}`) as HTMLDivElement
+		let input = document.getElementById(`i${i}`) as HTMLInputElement
+		if (input === null) {
+			const new_input = document.createElement('input')
+			new_input.id=`i${i}`
+			new_input.inputMode = 'numeric'
+			new_input.readOnly = true // inputが削除されているのを復活させるのはround-robinの際でreadOnlyになっているときのみ。
+			cell.replaceChildren(new_input)
+			input = document.getElementById(`i${i}`) as HTMLInputElement
+		}
 		if (possiblity.length === 1) {
-			const cell = document.getElementById(`c${i}`) as HTMLDivElement
 			cell.innerText = `${possiblity[0]}`
 		} else {
 			input.placeholder = `[${possiblity.length}]`

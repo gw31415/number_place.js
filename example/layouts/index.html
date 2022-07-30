@@ -22,10 +22,11 @@
 	</div>
 </body>
 
-<script>{{
+{{
 		$js := resources.Get "script.ts" | js.Build (
 			dict "externals" (slice "./pkg/number_place_wasm.js")
 		) | minify
-	}}{{ $js.Content | safeJS }}</script>
+}}
+<script>{{ $js.Content | safeJS }}</script>
 
 </html>

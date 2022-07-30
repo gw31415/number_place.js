@@ -10,6 +10,11 @@ async function reset() {
 	/// 操作するフィールド
 	const field = new wasm.Field
 
+	/// リセットボタン
+	const resetBtn = document.createElement('button')
+	resetBtn.innerText = 'reset'
+	resetBtn.addEventListener('click', reset)
+
 	/// 総当たりボタン
 	const button = document.createElement('button')
 	button.innerText = 'Round-Robin'
@@ -37,6 +42,7 @@ async function reset() {
 
 	// 本文への追加
 	document.getElementById('main').replaceChildren(
+		resetBtn,
 		table,
 		button,
 	)

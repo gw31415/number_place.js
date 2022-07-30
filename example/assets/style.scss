@@ -38,14 +38,20 @@ input {
 	font-size: .5em;
 }
 
-.row {
+#main {
+	max-width:512px;
+	width:100%;
+	text-align:center
+}
+
+.r {
 	display: flex;
 	height: 11.1111%;
 	width: 100%;
 	aspect-ratio: 10;
 }
 
-.cell {
+.c {
 	display: flex;
 	justify-content: center;
 	align-items: center;

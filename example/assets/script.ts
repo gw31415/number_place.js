@@ -1,4 +1,8 @@
-function refresh(field: import('../static/pkg/number_place_wasm').Field) {
+type Report = import('../static/pkg/number_place_wasm').Report;
+type Field = import('../static/pkg/number_place_wasm').Field;
+type Message = import('../static/round-robin').Message;
+
+function refresh(field: Field) {
 	for (let i = 0; i < 81; i++) {
 		const possiblity = field.possiblity_at(i)
 		const input = document.getElementById(`i${i}`) as HTMLInputElement
@@ -50,21 +54,18 @@ function refresh(field: import('../static/pkg/number_place_wasm').Field) {
 		Array.from(document.getElementsByTagName('input')).forEach((e) => {
 			e.readOnly = true
 		})
-		const seeker = new wasm.Seeker(field);
-		setTimeout(() => {
-			let report = seeker.next();
-			console.log(report.msg)
-			while (report.state !== wasm.SeekerState.Found && report.state !== wasm.SeekerState.Finished) {
-				report = seeker.next()
-				console.log(report.msg)
+		const worker = new Worker('./round-robin.js')
+		worker.onmessage = function(e: MessageEvent<Message>) {
+			const report = e.data
+			if (report.state === wasm.SeekerState.Finished) {
+				worker.terminate()
 			}
-			const result = report.result
-			if (result !== null) {
-				refresh(result)
-				btn.innerText = "An answer Found."
-			} else {
-				btn.innerText = "No answer Found."
+			if (report.field.length === 324) {
+				const field = new wasm.Field(report.field)
+				refresh(field)
 			}
-		}, 0)
+			btn.innerText = report.msg
+		};
+		worker.postMessage(field.bytes())
 	});
 })()

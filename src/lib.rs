@@ -33,8 +33,24 @@ pub struct Field(EntropyField);
 #[wasm_bindgen]
 impl Field {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> Field {
-        Field(Default::default())
+    pub fn new(bytes: Option<Box<[u8]>>) -> Result<Field, JsError> {
+        match bytes {
+            None => Ok(Field(Default::default())),
+            Some(bytes) => {
+                let bytes: Box<[u8; entropy_field::BITS_LENGTH]> = bytes
+                    .try_into()
+                    .or(Err(JsError::new("Failed to reproduce Field.")))?;
+                Ok(Field(
+                    entropy_field::EntropyField::try_from(*bytes)
+                        .or(Err(JsError::new("Failed to reproduce Field.")))?,
+                ))
+            }
+        }
+    }
+    #[wasm_bindgen]
+    pub fn bytes(&self) -> Box<[u8]> {
+        let bytes: [u8; entropy_field::BITS_LENGTH] = self.0.clone().into();
+        bytes.into()
     }
     #[wasm_bindgen]
     /// ナンプレに数字を記入します。

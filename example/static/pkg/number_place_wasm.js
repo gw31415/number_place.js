@@ -262,10 +262,11 @@ export class Report {
     }
     /**
     * 解答が見つかった場合、解答を返します。
+    * 解答途中のフィールドを返せる場合、それを返します。
     * @returns {Field | undefined}
     */
-    get result() {
-        const ret = wasm.report_result(this.ptr);
+    get field() {
+        const ret = wasm.report_field(this.ptr);
         return ret === 0 ? undefined : Field.__wrap(ret);
     }
 }

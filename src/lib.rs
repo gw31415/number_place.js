@@ -131,9 +131,15 @@ impl Report {
     }
     #[wasm_bindgen(getter)]
     /// 解答が見つかった場合、解答を返します。
-    pub fn result(&self) -> Option<Field> {
+    /// 解答途中のフィールドを返せる場合、それを返します。
+    pub fn field(&self) -> Option<Field> {
         if let Some(report) = &self.0 {
             if let brute_force::Report::Found(field) = report {
+                return Some(Field(field.to_owned()));
+            } else if let brute_force::Report::Try {
+                result: Ok(field), ..
+            } = report
+            {
                 return Some(Field(field.to_owned()));
             }
         }

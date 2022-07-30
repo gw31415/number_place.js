@@ -60,11 +60,11 @@ function refresh(field: Field) {
 			if (report.state === wasm.SeekerState.Finished) {
 				worker.terminate()
 			}
+			btn.innerText = report.msg
 			if (report.field.length === 324) {
-				const field = new wasm.Field(report.field)
+				const field = new wasm.Field(report.field);
 				refresh(field)
 			}
-			btn.innerText = report.msg
 		};
 		worker.postMessage(field.bytes())
 	});

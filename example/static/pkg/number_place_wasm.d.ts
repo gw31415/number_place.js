@@ -53,13 +53,14 @@ export class Field {
 export class Report {
   free(): void;
 /**
+* 解答が見つかった場合、解答を返します。
+* 解答途中のフィールドを返せる場合、それを返します。
+*/
+  readonly field: Field | undefined;
+/**
 * 進捗メッセージを文字列で表します。
 */
   readonly msg: string;
-/**
-* 解答が見つかった場合、解答を返します。
-*/
-  readonly result: Field | undefined;
 /**
 * 進捗をEnumで返します。
 */
@@ -96,7 +97,7 @@ export interface InitOutput {
   readonly __wbg_report_free: (a: number) => void;
   readonly report_msg: (a: number, b: number) => void;
   readonly report_state: (a: number) => number;
-  readonly report_result: (a: number) => number;
+  readonly report_field: (a: number) => number;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_free: (a: number, b: number) => void;

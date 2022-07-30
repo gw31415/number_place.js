@@ -12,7 +12,7 @@ export function seeker_next(a: number): number;
 export function __wbg_report_free(a: number): void;
 export function report_msg(a: number, b: number): void;
 export function report_state(a: number): number;
-export function report_result(a: number): number;
+export function report_field(a: number): number;
 export function __wbindgen_add_to_stack_pointer(a: number): number;
 export function __wbindgen_malloc(a: number): number;
 export function __wbindgen_free(a: number, b: number): void;

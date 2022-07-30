@@ -4,6 +4,8 @@ type Message = import('../static/round-robin').Message;
 
 /// ページをリセットする
 async function reset() {
+	const main = document.getElementById('main')
+	main.innerText = 'Loading....'
 	// @ts-ignore
 	const wasm: typeof import('../static/pkg/number_place_wasm') = await import('./pkg/number_place_wasm.js')
 	await wasm.default()
@@ -36,7 +38,7 @@ async function reset() {
 	}
 
 	// 本文への追加
-	document.getElementById('main').replaceChildren(
+	main.replaceChildren(
 		table,
 		button,
 	)

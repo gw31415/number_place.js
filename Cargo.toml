@@ -2,7 +2,6 @@
 name = "number_place_wasm"
 version = "0.1.0"
 edition = "2021"
-wasm-opt = false
 
 [dependencies.number_place]
 git = "https://github.com/gw31415/number_place"

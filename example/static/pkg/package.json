@@ -1,12 +1,15 @@
 {
   "name": "number_place_wasm",
+  "type": "module",
   "version": "0.1.0",
   "files": [
     "number_place_wasm_bg.wasm",
     "number_place_wasm.js",
     "number_place_wasm.d.ts"
   ],
-  "module": "number_place_wasm.js",
+  "main": "number_place_wasm.js",
   "types": "number_place_wasm.d.ts",
-  "sideEffects": false
+  "sideEffects": [
+    "./snippets/*"
+  ]
 }

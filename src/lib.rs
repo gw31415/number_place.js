@@ -59,7 +59,7 @@ impl Field {
         let value = value!(value);
         self.0
             .insert(place, value)
-            .or_else(|e| Err(JsError::new(&e.to_string())))
+            .map_err(|e| JsError::new(&e.to_string()))
     }
     #[wasm_bindgen]
     /// 指定した位置に入る可能性のある値一覧を返します。
@@ -108,7 +108,7 @@ impl Report {
                     result,
                 } => format!(
                     "ASSUMPTION: {value}@{place} -> {}",
-                    if let Err(_) = result {
+                    if result.is_err() {
                         "fail."
                     } else {
                         "continue."

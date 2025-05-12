@@ -1,3 +1,14 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import SudokuCell from "@/components/SudokuCell";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -209,7 +220,7 @@ export default function () {
     // <header className="h-1/5 flex flex-col items-center justify-around p-6 fill-current">
     //   <h1 className="font-[Fascinate] text-4xl">Solve Sudoku</h1>
     // </header>
-    <div className="h-dvh w-dvw flex flex-col items-center">
+    <div className="h-svh w-dvw flex flex-col items-center overflow-hidden">
       <header className="h-1/5 flex flex-col items-center justify-around p-6 fill-current">
         <img
           src="/solve_sudoku.svg"
@@ -243,6 +254,7 @@ export default function () {
                         if (!state) return;
                         if (!valueArr.includes(n)) {
                           toast("Impossible number", {
+                            position: "top-right",
                             icon: <Ban className="size-4 text-red-600" />,
                             description: `Possible numbers are [${valueArr.toSorted()}]`,
                             duration: 1500,
@@ -305,6 +317,7 @@ export default function () {
             setState(nextState);
             (async () => {
               toast.promise(promiseState, {
+                position: "top-right",
                 loading: "Searching an answer...",
                 duration: 1500,
                 success: (data) => {
@@ -324,18 +337,40 @@ export default function () {
         >
           <Bot />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="clear the board"
-          disabled={state?.bruteForceWorking}
-          onClick={() => {
-            if (!state) return;
-            setState(state.reset());
-          }}
-        >
-          <X />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="clear the board"
+              disabled={state?.bruteForceWorking}
+            >
+              <X />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Are you absolutely sure to Reset?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete not
+                only the current board, but also the history of your moves.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  if (!state) return;
+                  setState(state.reset());
+                }}
+              >
+                Reset
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </footer>
       <Toaster />
     </div>

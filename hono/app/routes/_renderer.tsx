@@ -19,7 +19,7 @@ export default reactRenderer(({ children, title, description }) => {
         <Link rel="stylesheet" href="/app/style.css" />
         <Script src="/app/client.ts" async />
       </head>
-      <body className="overflow-hidden">{children}</body>
+      <body>{children}</body>
     </html>
   );
 });

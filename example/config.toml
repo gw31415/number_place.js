@@ -1,8 +1,0 @@
-languageCode = 'en-us'
-title = 'Solve Number-places'
-ignorefiles = 'assets/pkg'
-
-[params]
-icon = 'favicon.png'
-description = 'A web application solves Number-place puzzles using bound propagation and search methods.'
-author = 'Amadeus_vn'

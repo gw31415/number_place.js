@@ -7,23 +7,23 @@ import { useEffect, useState } from "react";
 import type { DeserializedField } from "pkg/number_place_wasm";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
-type modtype = typeof import("pkg/number_place_wasm");
+type ModType = typeof import("pkg/number_place_wasm");
 
 class State {
-  #wasm: modtype;
+  #wasm: ModType;
 
   #history: Array<Uint8Array>;
   #inputHistory: Array<{
     position: number;
     value: number;
-  }>;
+  } | null>;
   #historyIndex: number;
 
   get initialized() {
     return this.#historyIndex === 0;
   }
 
-  static init(wasm: modtype): State {
+  static init(wasm: ModType): State {
     const state = new State([wasm.new_empty_field()], [], 0, wasm);
     return state;
   }
@@ -33,9 +33,9 @@ class State {
     inputHistory: Array<{
       position: number;
       value: number;
-    }>,
+    } | null>,
     historyIndex: number,
-    wasm: modtype,
+    wasm: ModType,
   ) {
     this.#history = history;
     this.#inputHistory = inputHistory;
@@ -48,6 +48,7 @@ class State {
   }
 
   public get undoable(): boolean {
+    if (this.#bruteForceWorking) return false;
     return this.#historyIndex > 0;
   }
 
@@ -63,6 +64,7 @@ class State {
   }
 
   public get redoable(): boolean {
+    if (this.#bruteForceWorking) return false;
     return this.#historyIndex < this.#history.length - 1;
   }
 
@@ -85,26 +87,38 @@ class State {
         position,
         n,
       );
-      const newHistory = this.#history.slice(0, this.#historyIndex + 1);
-      newHistory.push(nextField);
-      const newInputHistory = this.#inputHistory.slice(0, this.#historyIndex);
-      newInputHistory.push({ position, value: n });
-      return new State(
-        newHistory,
-        newInputHistory,
-        newHistory.length - 1,
-        this.#wasm,
-      );
+      const inputData = { position, value: n };
+      return this.#forceSwitch(nextField, inputData);
     } catch (e) {
       console.error(e);
     }
   }
 
+  forceSwitch(nextField: Uint8Array): State {
+    return this.#forceSwitch(nextField, null);
+  }
+
+  #forceSwitch(
+    nextField: Uint8Array,
+    inputData: { position: number; value: number } | null,
+  ): State {
+    const newHistory = this.#history.slice(0, this.#historyIndex + 1);
+    newHistory.push(nextField);
+    const newInputHistory = this.#inputHistory.slice(0, this.#historyIndex);
+    newInputHistory.push(inputData);
+    return new State(
+      newHistory,
+      newInputHistory,
+      newHistory.length - 1,
+      this.#wasm,
+    );
+  }
+
   cell(r: number, c: number): number | number[] {
     const position = r * 9 + c;
-    const manual = this.#inputHistory.find(
-      (v, i) => i < this.#historyIndex && v.position === position,
-    )?.value;
+    const manual = this.#inputHistory
+      .filter((item) => item !== null)
+      .find((v, i) => i < this.#historyIndex && v.position === position)?.value;
     if (manual) {
       return manual;
     }
@@ -121,22 +135,60 @@ class State {
     return true;
   }
 
-  bruteForce(): State | undefined {
-    try {
-      const nextField = this.#wasm.brute_force(
-        this.#history[this.#historyIndex],
-      );
-      if (nextField) {
-        const newHistory = this.#history.slice(0, this.#historyIndex + 1);
-        newHistory.push(nextField);
-        return new State(
-          newHistory,
-          this.#inputHistory,
-          newHistory.length - 1,
-          this.#wasm,
-        );
-      }
-    } catch (_) {}
+  #bruteForceWorking = false;
+
+  get bruteForceWorking() {
+    return this.#bruteForceWorking;
+  }
+
+  private set bruteForceWorking(value: boolean) {
+    this.#bruteForceWorking = value;
+  }
+
+  bruteForce(): {
+    state: State;
+    promiseState: Promise<State>;
+    terminate: () => State;
+  } {
+    const worker = new Worker("/brute-force.js");
+    const promise = new Promise<State>((resolve, reject) => {
+      worker.postMessage(this.#history[this.#historyIndex]);
+      worker.onmessage = (e: MessageEvent<Uint8Array>) => {
+        const field = e.data;
+        worker.terminate();
+
+        const newState = this.forceSwitch(field);
+        newState.bruteForceWorking = false;
+
+        resolve(newState);
+      };
+      worker.onerror = (e) => {
+        reject(e.message);
+      };
+    });
+
+    const newState = new State(
+      this.#history,
+      this.#inputHistory,
+      this.#historyIndex,
+      this.#wasm,
+    );
+    newState.bruteForceWorking = true;
+    const nowState = new State(
+      this.#history,
+      this.#inputHistory,
+      this.#historyIndex,
+      this.#wasm,
+    );
+
+    return {
+      state: newState,
+      terminate() {
+        worker.terminate();
+        return nowState;
+      },
+      promiseState: promise,
+    };
   }
 
   reset(): State {
@@ -185,6 +237,7 @@ export default function () {
                     ])}
                   >
                     <SudokuCell
+                      readOnly={state === undefined || state.bruteForceWorking}
                       noPlaceHolder={state === undefined || state.initialized}
                       onInput={(n) => {
                         if (!state) return;
@@ -241,13 +294,31 @@ export default function () {
           variant="ghost"
           size="icon"
           aria-label="find one of the answers by the program"
-          disabled={state?.isConverged()}
+          disabled={state?.isConverged() || state?.bruteForceWorking}
           onClick={() => {
             if (!state) return;
-            const nextState = state.bruteForce();
-            if (nextState) {
-              setState(nextState);
-            }
+            const {
+              state: nextState,
+              terminate,
+              promiseState,
+            } = state.bruteForce();
+            setState(nextState);
+            (async () => {
+              toast.promise(promiseState, {
+                loading: "Searching an answer...",
+                success: (data) => {
+                  setState(data);
+                  return "An answer found";
+                },
+                error: "No answer found",
+                action: {
+                  label: "Stop",
+                  onClick() {
+                    setState(terminate());
+                  },
+                },
+              });
+            })();
           }}
         >
           <Bot />
@@ -256,6 +327,7 @@ export default function () {
           variant="ghost"
           size="icon"
           aria-label="clear the board"
+          disabled={state?.bruteForceWorking}
           onClick={() => {
             if (!state) return;
             setState(state.reset());

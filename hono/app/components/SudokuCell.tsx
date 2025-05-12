@@ -13,6 +13,7 @@
 import { cn } from "@/lib/utils";
 
 export default function SudokuCell(props: {
+  readOnly?: boolean;
   onInput?: (value: number) => void;
   value: number | number[];
   className?: string | undefined;
@@ -52,6 +53,7 @@ export default function SudokuCell(props: {
         }
       }}
       inputMode="numeric"
+      readOnly={props.readOnly}
       placeholder={placeholder}
       className={cn(
         "text-inherit bg-transparent text-center outline-none m-0 size-full",

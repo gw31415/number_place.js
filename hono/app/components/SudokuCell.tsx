@@ -51,6 +51,7 @@ export default function SudokuCell(props: {
           }
         }
       }}
+      inputMode="numeric"
       placeholder={placeholder}
       className={cn(
         "text-inherit bg-transparent text-center outline-none m-0 size-full",

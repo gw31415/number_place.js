@@ -343,7 +343,7 @@ export default function () {
               variant="ghost"
               size="icon"
               aria-label="clear the board"
-              disabled={state?.bruteForceWorking}
+              disabled={state?.bruteForceWorking || state?.initialized}
             >
               <X />
             </Button>

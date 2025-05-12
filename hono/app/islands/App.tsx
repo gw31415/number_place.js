@@ -1,10 +1,12 @@
 import SudokuCell from "@/components/SudokuCell";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Bot, Redo, Undo, X } from "lucide-react";
+import { Ban, Bot, Redo, Undo, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import type { DeserializedField } from "pkg/number_place_wasm";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 type modtype = typeof import("pkg/number_place_wasm");
 
 class State {
@@ -167,30 +169,45 @@ export default function () {
         <div className="aspect-square grid grid-rows-9 border border-black">
           {Array.from(Array(9).keys()).map((row) => (
             <div key={`r${row}`} className="grid grid-cols-9 overflow-hidden">
-              {Array.from(Array(9).keys()).map((col) => (
-                <div
-                  key={`r${row}-c${col}`}
-                  className={cn("border size-full", [
-                    ...(row % 3 === 0 ? ["border-t-black"] : []),
-                    ...(row % 3 === 2 ? ["border-b-black"] : []),
-                    ...(col % 3 === 0 ? ["border-l-black"] : []),
-                    ...(col % 3 === 2 ? ["border-r-black"] : []),
-                  ])}
-                >
-                  <SudokuCell
-                    noPlaceHolder={state === undefined || state.initialized}
-                    onInput={(n) => {
-                      if (!state) return;
-                      const nextState = state.input(row, col, n);
-                      if (nextState) {
-                        setState(nextState);
-                      }
-                    }}
-                    value={state?.cell(row, col) ?? [1, 2, 3, 4, 5, 6, 7, 8, 9]}
-                    className="text-2xl font-bold"
-                  />
-                </div>
-              ))}
+              {Array.from(Array(9).keys()).map((col) => {
+                const value = state?.cell(row, col) ?? [
+                  1, 2, 3, 4, 5, 6, 7, 8, 9,
+                ];
+                const valueArr = typeof value === "number" ? [value] : value;
+                return (
+                  <div
+                    key={`r${row}-c${col}`}
+                    className={cn("border size-full", [
+                      ...(row % 3 === 0 ? ["border-t-black"] : []),
+                      ...(row % 3 === 2 ? ["border-b-black"] : []),
+                      ...(col % 3 === 0 ? ["border-l-black"] : []),
+                      ...(col % 3 === 2 ? ["border-r-black"] : []),
+                    ])}
+                  >
+                    <SudokuCell
+                      noPlaceHolder={state === undefined || state.initialized}
+                      onInput={(n) => {
+                        if (!state) return;
+                        if (!valueArr.includes(n)) {
+                          toast("Impossible number", {
+                            icon: <Ban className="size-4 text-red-600" />,
+                            description: `Possible numbers are [${valueArr.toSorted()}]`,
+                            duration: 1500,
+                            closeButton: true,
+                          });
+                        } else {
+                          const nextState = state.input(row, col, n);
+                          if (nextState) {
+                            setState(nextState);
+                          }
+                        }
+                      }}
+                      value={value}
+                      className="text-2xl font-bold"
+                    />
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
@@ -247,6 +264,7 @@ export default function () {
           <X />
         </Button>
       </footer>
+      <Toaster />
     </div>
   );
 }

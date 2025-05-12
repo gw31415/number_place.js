@@ -306,13 +306,14 @@ export default function () {
             (async () => {
               toast.promise(promiseState, {
                 loading: "Searching an answer...",
+                duration: 1500,
                 success: (data) => {
                   setState(data);
                   return "An answer found";
                 },
                 error: "No answer found",
                 action: {
-                  label: "Stop",
+                  label: "Terminate",
                   onClick() {
                     setState(terminate());
                   },

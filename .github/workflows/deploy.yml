@@ -54,6 +54,7 @@ jobs:
       working-directory: "hono"
       run: |
         cp -r ../rust/pkg pkg
+        cp -r ../rust/pkg public/pkg
         pnpm build
 
     - name: Deploy

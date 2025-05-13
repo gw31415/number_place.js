@@ -1,3 +1,5 @@
+import bruteForceWorker from "@/bruteForce?worker";
+import SudokuCell from "@/components/SudokuCell";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,16 +11,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import SudokuCell from "@/components/SudokuCell";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
+import type { DeserializedField } from "../../pkg/number_place_wasm";
 import { Ban, Bot, Redo, Undo, X } from "lucide-react";
 import { useEffect, useState } from "react";
-
-import type { DeserializedField } from "pkg/number_place_wasm";
-import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
-type ModType = typeof import("pkg/number_place_wasm");
+
+type ModType = typeof import("../../pkg/number_place_wasm");
 
 class State {
   #wasm: ModType;
@@ -161,7 +162,7 @@ class State {
     promiseState: Promise<State>;
     terminate: () => State;
   } {
-    const worker = new Worker("/brute-force.js");
+    const worker = new bruteForceWorker();
     const promise = new Promise<State>((resolve, reject) => {
       worker.postMessage(this.#history[this.#historyIndex]);
       worker.onmessage = (e: MessageEvent<Uint8Array>) => {

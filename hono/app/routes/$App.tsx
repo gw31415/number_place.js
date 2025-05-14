@@ -1,4 +1,4 @@
-import bruteForceWorker from "@/bruteForce?worker";
+import BruteforceWorker from "@/lib/bruteforce.worker?worker";
 import SudokuCell from "@/components/SudokuCell";
 import {
   AlertDialog,
@@ -162,7 +162,7 @@ class State {
     promiseState: Promise<State>;
     terminate: () => State;
   } {
-    const worker = new bruteForceWorker();
+    const worker = new BruteforceWorker();
     const promise = new Promise<State>((resolve, reject) => {
       worker.postMessage(this.#history[this.#historyIndex]);
       worker.onmessage = (e: MessageEvent<Uint8Array>) => {

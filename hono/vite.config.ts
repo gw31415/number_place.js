@@ -8,9 +8,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig(({ mode }) => {
   if (mode === "client") {
     return {
-      worker: {
-        format: "es",
-      },
+      worker: { format: "es" },
       build: {
         rollupOptions: {
           input: ["./app/client.ts", "./app/style.css"],
@@ -22,9 +20,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
-    worker: {
-      format: "es",
-    },
+    worker: { format: "es" },
     ssr: {
       external: ["react", "react-dom"],
     },

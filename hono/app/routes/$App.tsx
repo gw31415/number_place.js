@@ -211,7 +211,7 @@ class State {
 export default function () {
   const [state, setState] = useState<State | undefined>();
   useEffect(() => {
-    import("pkg/number_place_wasm").then(async (mod) => {
+    import("../../pkg/number_place_wasm").then(async (mod) => {
       await mod.default();
       setState(State.init(mod));
     });
